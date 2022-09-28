@@ -6,3 +6,6 @@ upload:
 
 serial:
 	platformio device monitor
+
+erase:
+	platformio run --target erase
