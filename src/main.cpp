@@ -5,7 +5,6 @@
 
 Preferences preferences;
 WebServer server(80);
-WiFiClient espClient;
 
 const char APP_NAME[] = "atmos";
 
