@@ -39,9 +39,19 @@ void webHandleStatus() {
   json.reserve(1024);
   json += "{\"uptime\": ";
   json += millis();
-  json += ", \"heap_free\":";
+  json += ", \"heap_free\": ";
   json += ESP.getFreeHeap();
-  json += "}";
+
+  json += ", \"mqtt_config\": {";
+  json += "\"server\": \"";
+  json += mqttServer;
+  json += "\", \"port\": ";
+  json += mqttPort;
+  json += ", \"node\": \"";
+  json += mqttNodeName;
+  json += "\", \"prefix\": \"";
+  json += mqttPrefix;
+  json += "\"}}";
 
   server.sendHeader("Access-Control-Allow-Origin", "*");
   server.send(200, "application/json", json);
@@ -93,7 +103,7 @@ void setup() {
   // load MQTT config vars from flash storage.
   Serial.println("Reading MQTT config vars");
   mqttServer = preferences.getString("mqttServer", defaultMqttServer);
-  mqttPort = preferences.getString("mqttPort", defaultMqttPort);
+  mqttPort = preferences.getString("mqttPort", defaultMqttPort).toInt();
   mqttNodeName = preferences.getString("mqttNodeName", defaultMqttNodeName);
   mqttPrefix = preferences.getString("mqttPrefix", defaultMqttPrefix);
   preferences.end();
