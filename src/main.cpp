@@ -7,6 +7,8 @@ Preferences preferences;
 WebServer server(80);
 WiFiClient espClient;
 
+const char APP_NAME[] = "atmos";
+
 // MQTT server config.
 char defaultMqttServer[40] = "";
 char defaultMqttPort[6] = "1833";
@@ -57,10 +59,34 @@ void webHandleStatus() {
   server.send(200, "application/json", json);
 }
 
+// Forget all saved preferences (WiFi & MQTT) and reboot.
+void webHandleReset() {
+  Serial.println("Resetting.");
+  server.send(202);
+
+  // Clear the custom config vars.
+  preferences.begin(APP_NAME, false);
+  preferences.clear();
+  preferences.end();
+
+  // Clear the WiFi connection credentials.
+  WiFiManager wifiManager;
+  wifiManager.resetSettings();
+
+  ESP.restart();
+}
+
+// Simply reboot the system.
+void webHandleReboot() {
+  Serial.println("Rebooting.");
+  server.send(202);
+  ESP.restart();
+}
+
 void setup() {
   WiFiManager wifiManager;
 
-  preferences.begin("atmos", false);
+  preferences.begin(APP_NAME, false);
   Serial.begin(9600);
 
   // Allow the user to configure MQTT params on the same UI as the WiFi.
@@ -114,6 +140,8 @@ void setup() {
   Serial.println(mqttPrefix);
 
   server.on("/status", webHandleStatus);
+  server.on("/reboot", HTTP_PUT, webHandleReboot);
+  server.on("/reset", HTTP_PUT, webHandleReset);
   server.onNotFound(webHandleNotFound);
   server.begin();
   Serial.println("HTTP server started");
