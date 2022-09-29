@@ -7,6 +7,14 @@ and displayed on a Grafana dashboard by writing them to an InfluxDB.
 The metrics collected are via a Bosch BME280: barometric air pressure,
 temperature and humidity.
 
+The ESP32 board is programmed using Arduino code, using [PlatformIO](https://platformio.org/).
+
+## Hardware
+
+- Currently using an ESP32 Devkit v4 with the intention to switch to smaller
+  ESP32 D1 Minis
+- Bosch BME280 pressure, humidity & temperature sensor
+
 ## How it works
 
 On first run, it creates a WiFi add-hoc network allowing you to configure the
@@ -29,6 +37,8 @@ locations around the house.
 ## Development
 
 Install platformio core and refer to the `Makefile` for common dev commands.
+
+See https://platformio.org/install/cli. I used `brew install platformio`.
 
 - `make compile` compile the code
 - `make upload` compile and flash to the device
