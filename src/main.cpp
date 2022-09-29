@@ -139,7 +139,7 @@ void setup() {
   Serial.println(mqttNodeName);
   Serial.println(mqttPrefix);
 
-  server.on("/status", webHandleStatus);
+  server.on("/status", HTTP_GET, webHandleStatus);
   server.on("/reboot", HTTP_PUT, webHandleReboot);
   server.on("/reset", HTTP_PUT, webHandleReset);
   server.onNotFound(webHandleNotFound);
