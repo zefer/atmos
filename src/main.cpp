@@ -37,7 +37,7 @@ void webHandleNotFound() {
 void webHandleStatus() {
   String json;
   json.reserve(1024);
-  json += "{\"current_time\": ";
+  json += "{\"uptime\": ";
   json += millis();
   json += ", \"heap_free\":";
   json += ESP.getFreeHeap();
