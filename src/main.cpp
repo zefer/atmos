@@ -30,11 +30,11 @@ void saveConfigCallback () {
   shouldSaveConfig = true;
 }
 
-void handleNotFound() {
+void webHandleNotFound() {
   server.send(404, "application/json", "{\"message\":\"Not found\"}");
 }
 
-void handleStatus() {
+void webHandleStatus() {
   String json;
   json.reserve(1024);
   json += "{\"current_time\": ";
@@ -50,7 +50,8 @@ void handleStatus() {
 void setup() {
   WiFiManager wifiManager;
 
-  preferences.begin("testapp1", false);
+  preferences.begin("atmos", false);
+  Serial.begin(9600);
 
   // Allow the user to configure MQTT params on the same UI as the WiFi.
   WiFiManagerParameter mqttServerField("server", "mqtt server", defaultMqttServer, 40);
@@ -61,8 +62,6 @@ void setup() {
   wifiManager.addParameter(&mqttPortField);
   wifiManager.addParameter(&mqttNodeField);
   wifiManager.addParameter(&mqttPrefixField);
-
-  Serial.begin(9600);
 
   wifiManager.setAPCallback(configModeCallback);
   wifiManager.setSaveConfigCallback(saveConfigCallback);
@@ -89,10 +88,6 @@ void setup() {
     preferences.putString("mqttPort", port);
     preferences.putString("mqttNodeName", node);
     preferences.putString("mqttPrefix", prefix);
-    Serial.println(server);
-    Serial.println(port);
-    Serial.println(node);
-    Serial.println(prefix);
   }
 
   // load MQTT config vars from flash storage.
@@ -101,18 +96,15 @@ void setup() {
   mqttPort = preferences.getString("mqttPort", defaultMqttPort);
   mqttNodeName = preferences.getString("mqttNodeName", defaultMqttNodeName);
   mqttPrefix = preferences.getString("mqttPrefix", defaultMqttPrefix);
-
   preferences.end();
-
   Serial.println("using MQTT prefs...");
   Serial.println(mqttServer);
   Serial.println(mqttPort);
   Serial.println(mqttNodeName);
   Serial.println(mqttPrefix);
 
-  server.on("/status", handleStatus);
-  server.onNotFound(handleNotFound);
-
+  server.on("/status", webHandleStatus);
+  server.onNotFound(webHandleNotFound);
   server.begin();
   Serial.println("HTTP server started");
 }
