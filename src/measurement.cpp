@@ -17,3 +17,14 @@ void Measurement::broadcast(HardwareSerial * serial, char * formattedValue) {
   serial->print(": ");
   serial->println(formattedValue);
 }
+
+void Measurement::publish(String &json) {
+  json += "{\"name\": \"";
+  json += name;
+  json += "\", \"value\": ";
+  json += lastValue;
+  json += ", \"last_measured_at\": ";
+  json += lastMeasuredAt;
+  json += "}, ";
+}
+

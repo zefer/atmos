@@ -62,7 +62,15 @@ void webHandleStatus() {
   json += mqttNodeName;
   json += "\", \"prefix\": \"";
   json += mqttPrefix;
-  json += "\"}}";
+  json += "\"}";
+
+  json += ", \"measurements\": [";
+  temperatureMeasurement.publish(json);
+  humidityMeasurement.publish(json);
+  pressureMeasurement.publish(json);
+  json.remove(json.lastIndexOf(","));
+
+  json += "]}";
 
   server.sendHeader("Access-Control-Allow-Origin", "*");
   server.send(200, "application/json", json);

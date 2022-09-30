@@ -12,5 +12,6 @@ struct Measurement {
 
   void record(float value);
   void publish(HardwareSerial * serial);
+  void publish(String &json);
   void broadcast(HardwareSerial * serial, char * formattedValue);
 };
