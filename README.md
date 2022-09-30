@@ -15,6 +15,18 @@ The ESP32 board is programmed using Arduino code, using [PlatformIO](https://pla
   ESP32 D1 Minis
 - Bosch BME280 pressure, humidity & temperature sensor
 
+## GPIO Pins
+
+Wired to the default ESP32 I2C pins as follows. Guides can be found at
+https://randomnerdtutorials.com/esp32-bme280-arduino-ide-pressure-temperature-humidity/.
+
+- ESP32 3.3v    -> BME280 VIN
+- ESP32 GND     -> BME280 GND
+- ESP32 GPIO 22 -> BME280 SCL
+- ESP32 GPIO 21 -> BME280 SDA
+
+![Photo of early prototype](images/early-prototype.jpg)
+
 ## How it works
 
 On first run, it creates a WiFi add-hoc network allowing you to configure the

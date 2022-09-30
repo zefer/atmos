@@ -2,11 +2,16 @@
 #include <WiFiManager.h>
 #include <WebServer.h>
 #include <Preferences.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_BME280.h>
 
 Preferences preferences;
 WebServer server(80);
+Adafruit_BME280 bme;
 
 const char APP_NAME[] = "atmos";
+// How many milliseconds between taking the sensor readings.
+const long POLL_DELAY = 1000;
 
 // MQTT server config.
 char defaultMqttServer[40] = "";
@@ -144,8 +149,35 @@ void setup() {
   server.onNotFound(webHandleNotFound);
   server.begin();
   Serial.println("HTTP server started");
+
+  if (!bme.begin(0x76)) {
+    Serial.println("Could not find the BME280 sensor");
+    while (1);
+  }
+}
+
+void readBmeSensor(void) {
+  static unsigned long lastMeasurementMillis = 0;
+
+  if(millis() - lastMeasurementMillis > POLL_DELAY) {
+    lastMeasurementMillis = millis();
+    Serial.print("Temperature = ");
+    Serial.print(bme.readTemperature());
+    Serial.println(" *C");
+
+    Serial.print("Pressure = ");
+    Serial.print(bme.readPressure() / 100.0F);
+    Serial.println(" hPa");
+
+    Serial.print("Humidity = ");
+    Serial.print(bme.readHumidity());
+    Serial.println(" %");
+
+    Serial.println();
+  }
 }
 
 void loop() {
   server.handleClient();
+  readBmeSensor();
 }
