@@ -4,10 +4,15 @@
 #include <Preferences.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BME280.h>
+#include <measurement.h>
 
 Preferences preferences;
 WebServer server(80);
 Adafruit_BME280 bme;
+
+Measurement temperatureMeasurement("temperature");
+Measurement humidityMeasurement("humidity");
+Measurement pressureMeasurement("pressure");
 
 const char APP_NAME[] = "atmos";
 // How many milliseconds between taking the sensor readings.
@@ -161,17 +166,17 @@ void readBmeSensor(void) {
 
   if(millis() - lastMeasurementMillis > POLL_DELAY) {
     lastMeasurementMillis = millis();
-    Serial.print("Temperature = ");
-    Serial.print(bme.readTemperature());
-    Serial.println(" *C");
 
-    Serial.print("Pressure = ");
-    Serial.print(bme.readPressure() / 100.0F);
-    Serial.println(" hPa");
+    // Temperature in degrees celcius.
+    temperatureMeasurement.record(bme.readTemperature());
+    // Relative humidity in %.
+    humidityMeasurement.record(bme.readHumidity());
+    // Barometric pressure in hPa.
+    pressureMeasurement.record(bme.readPressure() / 100.0F);
 
-    Serial.print("Humidity = ");
-    Serial.print(bme.readHumidity());
-    Serial.println(" %");
+    temperatureMeasurement.publish(&Serial);
+    humidityMeasurement.publish(&Serial);
+    pressureMeasurement.publish(&Serial);
 
     Serial.println();
   }
