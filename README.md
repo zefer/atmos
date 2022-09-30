@@ -64,6 +64,7 @@ See https://platformio.org/install/cli. I used `brew install platformio`.
 - [x] `GET /status` endpoint for general info and debugging
 - [x] `PUT /reboot` and `PUT /reset` to assist with reconfiguring
 - [ ] Periodically read BME280 humidity, temperature & pressure values
+- [ ] Consider adding a dewpoint calculation from humidity + temperature
 - [ ] Periodically publish BME280 readings to MQTT
 - [ ] Build an MQTT listener that subscribes to the readings and writes them to
   an InfluxDB, similar to
