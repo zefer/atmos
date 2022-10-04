@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <measurement.h>
+#include <PubSubClient.h>
 
 void Measurement::record(float value) {
   lastValue = value;
@@ -28,3 +29,15 @@ void Measurement::publish(String &json) {
   json += "}, ";
 }
 
+void Measurement::publish(PubSubClient * client, char * mqttPrefix) {
+  char formattedValue[256];
+  sprintf(formattedValue, "%.2f", lastValue);
+  broadcast(client, mqttPrefix, formattedValue);
+}
+
+void Measurement::broadcast(PubSubClient * client, char * mqttPrefix, char * formattedValue) {
+  // TODO: consider setting this on instantiation to reduce overhead.
+  char topic[256];
+  sprintf(topic, "%s/%s", mqttPrefix, name);
+  client->publish(topic, formattedValue);
+}

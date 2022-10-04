@@ -5,8 +5,11 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BME280.h>
 #include <measurement.h>
+#include <PubSubClient.h>
 
 Preferences preferences;
+WiFiClient espClient;
+PubSubClient mqttClient(espClient);
 WebServer server(80);
 Adafruit_BME280 bme;
 
@@ -20,9 +23,9 @@ const long POLL_DELAY = 1000;
 
 // MQTT server config.
 char defaultMqttServer[40] = "";
-char defaultMqttPort[6] = "1833";
+char defaultMqttPort[6] = "1883";
 char defaultMqttNodeName[40] = "atmos-office";
-char defaultMqttPrefix[40] = "atmos";
+char defaultMqttPrefix[40] = "home/roomname/atmos";
 String mqttServer;
 String mqttPort;
 String mqttNodeName;
@@ -45,6 +48,7 @@ void webHandleNotFound() {
   server.send(404, "application/json", "{\"message\":\"Not found\"}");
 }
 
+// TODO: include MQTT client connection status in JSON.
 void webHandleStatus() {
   String json;
   json.reserve(1024);
@@ -98,6 +102,32 @@ void webHandleReboot() {
   Serial.println("Rebooting.");
   server.send(202);
   ESP.restart();
+}
+
+// https://github.com/knolleary/pubsubclient/blob/master/examples/mqtt_esp8266/mqtt_esp8266.ino
+void mqtt_reconnect() {
+  if(mqttClient.connected()) {
+    return;
+  }
+
+  static unsigned long lastMqttReconnectMillis = 0;
+  if(millis() - lastMqttReconnectMillis < 5000) {
+    return;
+  }
+  lastMqttReconnectMillis = millis();
+
+  Serial.print("Attempting MQTT connection to ");
+  Serial.print(mqttServer);
+  Serial.print(":");
+  Serial.println(mqttPort);
+  mqttClient.setServer(mqttServer.c_str(), mqttPort.toInt());
+
+  if (mqttClient.connect(mqttNodeName.c_str())) {
+    Serial.println("MQTT connected");
+  } else {
+    Serial.print("MQTT connection failed, rc=");
+    Serial.print(mqttClient.state());
+  }
 }
 
 void setup() {
@@ -186,11 +216,25 @@ void readBmeSensor(void) {
     humidityMeasurement.publish(&Serial);
     pressureMeasurement.publish(&Serial);
 
+    // TODO: perform this conversion once, during set-up? Or pass the String
+    // and do the conversion in the Measurement lib?
+    char prefix[128];
+    mqttPrefix.toCharArray(prefix, 128);
+
+    temperatureMeasurement.publish(&mqttClient, prefix);
+    humidityMeasurement.publish(&mqttClient, prefix);
+    pressureMeasurement.publish(&mqttClient, prefix);
+
     Serial.println();
   }
 }
 
 void loop() {
+  if (mqttClient.connected()) {
+    mqttClient.loop();
+  } else {
+    mqtt_reconnect();
+  }
   server.handleClient();
   readBmeSensor();
 }
