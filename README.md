@@ -1,8 +1,8 @@
 # Atmos
 
-An ESP32 based home IoT device. It collects some atmospheric readings for the
-room and publishes them to MQTT. Subsequently, these metrics can be collected
-and displayed on a Grafana dashboard by writing them to an InfluxDB.
+An ESP32 based home IoT device. It collects some climate readings for the room
+and publishes them to MQTT. Subsequently, these metrics can be collected and
+displayed on a Grafana dashboard by writing them to an InfluxDB.
 
 The metrics collected are via a Bosch BME280: barometric air pressure,
 temperature and humidity.
@@ -43,7 +43,7 @@ periodically publish data to MQTT.
 ## Why?
 
 To learn ESP32 development, to help with a future upcoming wind monitor
-project. And also to collect some interesting atmospheric data from various
+project. And also to collect some interesting climate data from various
 locations around the house.
 
 ## Development
