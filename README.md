@@ -1,11 +1,12 @@
 # Atmos
 
 An ESP32 based home IoT device. It collects some climate readings for the room
-and publishes them to MQTT. Subsequently, these metrics can be collected and
-displayed on a Grafana dashboard by writing them to an InfluxDB.
+and publishes them to MQTT.
 
-The metrics collected are via a Bosch BME280: barometric air pressure,
-temperature and humidity.
+These metrics can be consumed by subscribing to the MQTT topics. For example:
+- In Home Assistant, to provide climate data for rooms and automation
+- Writing to an InfluxDB database, so the data can be displayed on a Grafana
+  Dashboard. For an example of such, see https://github.com/zefer/mqtt-to-influx
 
 The ESP32 board is programmed using Arduino code, using [PlatformIO](https://platformio.org/).
 
@@ -13,7 +14,7 @@ The ESP32 board is programmed using Arduino code, using [PlatformIO](https://pla
 
 - Currently using an ESP32 Devkit v4 with the intention to switch to smaller
   ESP32 D1 Minis
-- Bosch BME280 pressure, humidity & temperature sensor
+- Bosch BME280 barometric air pressure, humidity & temperature sensor
 
 ## GPIO Pins
 
@@ -65,8 +66,8 @@ See https://platformio.org/install/cli. I used `brew install platformio`.
 - [x] `PUT /reboot` and `PUT /reset` to assist with reconfiguring
 - [x] Periodically read BME280 humidity, temperature & pressure values
 - [ ] Consider adding a dewpoint calculation from humidity + temperature
-- [ ] Periodically publish BME280 readings to MQTT
-- [ ] Build an MQTT listener that subscribes to the readings and writes them to
+- [x] Periodically publish BME280 readings to MQTT
+- [x] Build an MQTT listener that subscribes to the readings and writes them to
   an InfluxDB, similar to
   [this UDP->InfluxDB energy monitor listener](https://github.com/zefer/energy-monitor)
 - [ ] Design and 3D-print an enclosure
