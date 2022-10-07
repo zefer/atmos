@@ -12,8 +12,9 @@ The ESP32 board is programmed using Arduino code, using [PlatformIO](https://pla
 
 ## Hardware
 
-- Currently using an ESP32 Devkit v4 with the intention to switch to smaller
-  ESP32 D1 Minis
+- Made using an ESP32 D1 Mini board, but initially prototyped on an ESP32
+  Devkit V4 board. The work the same and all that needs to change is the
+  `board` type in `platformio.ini'
 - Bosch BME280 barometric air pressure, humidity & temperature sensor
 
 ## GPIO Pins
@@ -26,7 +27,12 @@ https://randomnerdtutorials.com/esp32-bme280-arduino-ide-pressure-temperature-hu
 - ESP32 GPIO 22 -> BME280 SCL
 - ESP32 GPIO 21 -> BME280 SDA
 
-![Photo of early prototype](images/early-prototype.jpg)
+![Photo of v1](images/v1.jpg)
+
+## 3D-Printed Case
+
+The deign and print files can be found here:
+https://www.printables.com/model/290637-esp32-d1-mini-bme280-iot-sensor-case
 
 ## How it works
 
@@ -70,4 +76,7 @@ See https://platformio.org/install/cli. I used `brew install platformio`.
 - [x] Build an MQTT listener that subscribes to the readings and writes them to
   an InfluxDB, similar to
   [this UDP->InfluxDB energy monitor listener](https://github.com/zefer/energy-monitor)
-- [ ] Design and 3D-print an enclosure
+- [x] Design and 3D-print an enclosure
+- [ ] Verify the measurements, in particular temperature, and consider changing
+  the case design to move the BME280 board further away from the ESP32 board
+  and any heat it may radiate
