@@ -19,7 +19,7 @@ Measurement pressureMeasurement("pressure");
 
 const char APP_NAME[] = "atmos";
 // How many milliseconds between taking the sensor readings.
-const long POLL_DELAY = 1000;
+const long POLL_DELAY = 20000;
 
 // MQTT server config.
 char defaultMqttServer[40] = "";
